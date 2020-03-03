@@ -151,13 +151,6 @@ namespace Discord.Bot.Modules
                 await ReplyAsync($"{message}\n```{table.ToMarkDownString()}```");
             }
         }
-
-        [Command("https://steamcommunity.com/profiles/")]
-        [Summary("Shows the latest non-banned accounts paged.")]
-        public async Task QuickTrackAccount(int page = 0)
-        {
-            await ReplyAsync("IT WORKS!");
-        }
     }
 
 }
