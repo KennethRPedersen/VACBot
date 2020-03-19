@@ -48,7 +48,10 @@ namespace Discord.Bot
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(
-                opt => opt.UseSqlite("Data Source=DiscordBot.db"));
+                opt => {
+                    opt.UseSqlite("Data Source=DiscordBot.db");
+                }, ServiceLifetime.Scoped);
+
 
             services.AddScoped<ISteamAPIRepo, SteamAPIRepo>();
             services.AddScoped<IAccountRepo, AccountRepo>();

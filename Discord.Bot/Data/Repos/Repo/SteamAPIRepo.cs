@@ -24,7 +24,6 @@ namespace Discord.Bot.Data.Repos.Repo
             using (var reader = new StreamReader(stream))
             {
                 var jObject = Newtonsoft.Json.Linq.JObject.Parse(reader.ReadLine());
-                Console.WriteLine(jObject);
                 accs = JsonConvert.DeserializeObject<List<Account>>(jObject["players"].ToString());
             }
 
@@ -55,14 +54,12 @@ namespace Discord.Bot.Data.Repos.Repo
             ids.Remove(ids.Length - 1);
 
             string url = $"http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=C15D224F522B82D6EB0ADB72BA015EDA&steamids={ids}";
-            Console.WriteLine(url);
 
             using (var client = new WebClient())
             using (var stream = client.OpenRead(url))
             using (var reader = new StreamReader(stream))
             {
                 var jObject = Newtonsoft.Json.Linq.JObject.Parse(reader.ReadLine());
-                Console.WriteLine(jObject);
                 accs = JsonConvert.DeserializeObject<List<Account>>(jObject["players"].ToString());
             }
 
@@ -73,7 +70,6 @@ namespace Discord.Bot.Data.Repos.Repo
 
                 if (apiAcc != null)
                 {
-                    Console.WriteLine("In loop: " + apiAcc.VACBanned);
                     if ((acc.VACBanned == false && apiAcc.VACBanned == true) || (acc.DaysSinceLastBan != apiAcc.DaysSinceLastBan))
                     {
                         acc.VACBanned = true;
@@ -83,7 +79,6 @@ namespace Discord.Bot.Data.Repos.Repo
                 }
             });
 
-            accounts.ForEach(a => Console.WriteLine(a.VACBanned));
             return accounts;
         }
     }

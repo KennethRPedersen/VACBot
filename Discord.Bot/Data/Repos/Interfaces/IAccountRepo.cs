@@ -8,9 +8,9 @@ namespace Discord.Bot.Data.Repos.Interfaces
     public interface IAccountRepo
     {
         void AddAccount(Account account);
-        List<Account> GetNonbannedAccounts();
+        List<Account> GetNonbannedAccounts(ulong serverId);
         void UpdateAccounts(List<Account> accs);
-        List<Account> GetLatestNonbannedAccounts(int amount, int prev);
-        List<Account> GetLatestBannedAccounts(int amount, int prev);
+        List<Account> GetLatestNonbannedAccounts(ulong serverId, int amount, int prev);
+        List<Account> GetLatestBannedAccounts(ulong serverId, int amount, int prev);
     }
 }

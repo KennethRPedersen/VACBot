@@ -12,25 +12,16 @@ namespace Discord.Bot.Data
         public DataContext(DbContextOptions<DataContext> dbContextOptions) : base(dbContextOptions)
         {
             // USE BELOW TO RESET DB
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Message>()
-                .HasKey(ent => ent.MessageId);
-
             modelBuilder.Entity<Account>()
-                .HasKey(ent => ent.SteamId);
-
-            modelBuilder.Entity<Account>()
-                .HasOne(acc => acc.Message)
-                .WithOne(msg => msg.Account)
-                .HasForeignKey<Message>(msg => msg.SteamId);
+                .HasKey(ent => new { ent.SteamId, ent.ServerId });
         }
 
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<Message> Messages { get; set; }
     }
 }

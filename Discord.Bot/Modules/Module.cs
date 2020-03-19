@@ -50,13 +50,9 @@ namespace Discord.Bot.Modules
                 SteamId = steamid.ToString(),
                 TimeOfReport = DateTime.Now,
                 VACBanned = false,
-
-                Message = new Message()
-                {
-                    ServerId = Context.Guild.Id,
-                    ChannelId = Context.Channel.Id,
-                    MessageId = Context.Message.Id
-                }
+                ServerId = Context.Guild.Id,
+                ChannelId = Context.Channel.Id,
+                MessageId = Context.Message.Id
             };
 
             try
@@ -83,7 +79,7 @@ namespace Discord.Bot.Modules
         [Summary("Shows the longest nonbanned accounts paged.")]
         public async Task ListNonbannedAccounts(int page = 0)
         {
-            var accs = _accRepo.GetLatestNonbannedAccounts(10, page);
+            var accs = _accRepo.GetLatestNonbannedAccounts(GetServerId(), 10, page);
 
             printAccounts(accs, "Non-banned accounts: ");
         }
@@ -92,7 +88,7 @@ namespace Discord.Bot.Modules
         [Summary("Shows the latest non-banned accounts paged.")]
         public async Task ListBannedAccounts(int page = 0)
         {
-            var accs = _accRepo.GetLatestBannedAccounts(10, page);
+            var accs = _accRepo.GetLatestBannedAccounts(GetServerId(), 10, page);
 
             printAccounts(accs, "Banned accounts: ");
         }
@@ -105,7 +101,7 @@ namespace Discord.Bot.Modules
             List<Account> accs = new List<Account>();
             try
             {
-                accs = _accRepo.GetNonbannedAccounts();
+                accs = _accRepo.GetNonbannedAccounts(GetServerId());
                 if(accs.Count() > 0)
                 {
                     totalCount = accs.Count();
@@ -149,7 +145,15 @@ namespace Discord.Bot.Modules
                 });
 
                 await ReplyAsync($"{message}\n```{table.ToMarkDownString()}```");
+            } else
+            {
+                await ReplyAsync("No tracked accounts found!");
             }
+        }
+
+        private ulong GetServerId()
+        {
+            return Context.Guild.Id;
         }
     }
 

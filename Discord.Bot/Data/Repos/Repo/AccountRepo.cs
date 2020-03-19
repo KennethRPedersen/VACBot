@@ -17,22 +17,22 @@ namespace Discord.Bot.Data.Repos.Repo
             _ctx = ctx;
         }
 
-        public bool CheckAccountExist(string id)
+        public bool CheckAccountExist(string id, ulong serverId)
         {
-            return _ctx.Accounts.Where(acc => acc.SteamId == id).Count() > 0;
+            return _ctx.Accounts.Where(acc => acc.SteamId == id && acc.ServerId == serverId).Count() > 0;
         }
 
         public void AddAccount(Account account)
         {
-            if (CheckAccountExist(account.SteamId)) throw new Exception("Account is already being tracked!");
+            if (CheckAccountExist(account.SteamId, account.ServerId)) throw new Exception("Account is already being tracked!");
             _ctx.Accounts.Attach(account).State = EntityState.Added;
             _ctx.SaveChanges();
         }
 
-        public List<Account> GetNonbannedAccounts()
+        public List<Account> GetNonbannedAccounts(ulong serverId)
         {
-            return _ctx.Accounts.Where(acc => acc.VACBanned == false)
-                .Include(acc => acc.Message)
+            return _ctx.Accounts
+                .Where(acc => acc.VACBanned == false && acc.ServerId == serverId)
                 .ToList();
         }
 
@@ -45,17 +45,17 @@ namespace Discord.Bot.Data.Repos.Repo
             _ctx.SaveChanges();
         }
 
-        public List<Account> GetLatestNonbannedAccounts(int amount, int prev = 0)
+        public List<Account> GetLatestNonbannedAccounts(ulong serverId, int amount, int prev = 0)
         {
-            return _ctx.Accounts.Where(acc => acc.VACBanned == false)
+            return _ctx.Accounts.Where(acc => acc.VACBanned == false && acc.ServerId == serverId)
                 .OrderBy(acc => acc.TimeOfReport)
                 .Skip((prev - 1) * amount)
                 .Take(amount).ToList();
         }
 
-        public List<Account> GetLatestBannedAccounts(int amount, int prev = 0)
+        public List<Account> GetLatestBannedAccounts(ulong serverId, int amount, int prev = 0)
         {
-            return _ctx.Accounts.Where(acc => acc.VACBanned == true)
+            return _ctx.Accounts.Where(acc => acc.VACBanned == true && acc.ServerId == serverId)
                 .OrderByDescending(acc => acc.TimeOfReport)
                 .Skip((prev - 1) * amount)
                 .Take(amount).ToList();

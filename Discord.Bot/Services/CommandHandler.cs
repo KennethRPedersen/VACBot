@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System;
+using System.Text.RegularExpressions;
 
 namespace Discord.Bot.Services
 {
@@ -32,7 +33,6 @@ namespace Discord.Bot.Services
         {
             var msg = s as SocketUserMessage;     // Ensure the message is from a user/bot
             if (msg == null) return;
-            if (msg.Author.Id == _discord.CurrentUser.Id) return;     // Ignore self when checking commands
 
             var context = new SocketCommandContext(_discord, msg);     // Create the command context
 
@@ -47,6 +47,10 @@ namespace Discord.Bot.Services
                     Console.WriteLine(result.Error); // Probably meant for another bot, so no reason to alert.
                     await context.Channel.SendMessageAsync(result.ErrorReason);
                 }
+            }
+            else if (new Regex("^[0-9]{17}$").IsMatch(msg.Content)) // IF STEAMID64
+            {
+                await context.Channel.SendMessageAsync(_config["prefix"] + "vac " + msg.Content);
             }
         }
     }

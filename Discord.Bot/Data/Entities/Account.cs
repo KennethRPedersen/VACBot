@@ -14,6 +14,9 @@ namespace Discord.Bot.Data.Entities
         public int DaysSinceLastBan { get; set; }
         public int DaysReportToBan { get; set; }
 
-        public Message Message { get; set; }
+
+        public ulong ServerId { get; set; }
+        public ulong ChannelId { get; set; }
+        public ulong MessageId { get; set; }
     }
 }
