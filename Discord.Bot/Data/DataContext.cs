@@ -12,7 +12,7 @@ namespace Discord.Bot.Data
         public DataContext(DbContextOptions<DataContext> dbContextOptions) : base(dbContextOptions)
         {
             // USE BELOW TO RESET DB
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
